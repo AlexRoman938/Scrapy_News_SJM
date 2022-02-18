@@ -1,7 +1,8 @@
+from gc import callbacks
 import scrapy
 
 """
-What do I want?  Quiero :
+What do I want? :
 
 DIARIO EL COMERCIO
 
@@ -18,36 +19,18 @@ Href articulo : response.css('.story-item__title ::attr(href)').getall()
 Sacar el subtítulo: response.xpath('//h2/text()').get()
 
 
-Recorrer las páginas : response.css('.pagination__page ::attr(href)')[:1].get()
-
-
-
-DIARIO LA REPÚBLICA
-
-Título de artículo : response.xpath('//li[@class = "PostSectionListLI"]/h2[@class = "PostSectionListH3"]/a[@class = "PostSectionListA"]/text()').getall()
-
-Href del artículo : response.xpath('//li[@class = "PostSectionListLI"]/h2[@class = "PostSectionListH3"]/a[@class = "PostSectionListA"]/@href').getall()
-
-Luego entrar al artículo
-
-Sacar el parrafo de subtitulo : response.xpath('//h2[@class = "DefaultSubtitle"]/text()').get()
-
-Posiblemente hacer el ver más de abajo
-
-
+Recorrer las páginas : response.css('.pagination__right ::attr(href)').get()
 
 """
 
 
 class SJMSpider(scrapy.Spider):
 
-    name = "sjm_scr"
+    name = "sjm_comercio"
 
     start_urls = [
 
           'https://elcomercio.pe/noticias/san-juan-de-miraflores/',
-
-          #'https://larepublica.pe/tag/san-juan-de-miraflores/'
 
     ]
 
@@ -74,6 +57,18 @@ class SJMSpider(scrapy.Spider):
             yield response.follow(href, callback = self.parse_link,
                                                 cb_kwargs = {'url_comercio': response.urljoin(href)})
     
+        
+        next_page_button_link =  response.css('.pagination__right ::attr(href)').get() #sacamos el href
+
+        try:
+
+            if next_page_button_link:
+
+                yield response.follow(next_page_button_link, callback = self.parse)
+        
+        except:
+
+            pass
 
     def parse_link(self, response, **kwargs):
         
@@ -87,4 +82,7 @@ class SJMSpider(scrapy.Spider):
             'title_comercio' : title_comercio,
             'subtitle_comercio' : subtitle_comercio
         }
+
+        
+
 
