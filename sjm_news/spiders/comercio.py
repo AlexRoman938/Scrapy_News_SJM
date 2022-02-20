@@ -15,11 +15,14 @@ Luego entrar al artículo
 
 Href articulo : response.css('.story-item__title ::attr(href)').getall()
 
-
 Sacar el subtítulo: response.xpath('//h2/text()').get()
 
+fecha : response.css('.story-contents__time ::text').get()
 
 Recorrer las páginas : response.css('.pagination__right ::attr(href)').get()
+
+
+Los artículos que dicen null es porque su estructura es muy diferente a lo de las otras noticias.
 
 """
 
@@ -40,7 +43,7 @@ class SJMSpider(scrapy.Spider):
             'sjm_news_comercio.json': {
                 'format': 'json',
                 'encoding': 'utf8',
-                'fields': ['link_comercio', 'title_comercio', 'subtitle_comercio'],
+                'fields': ['link_comercio', 'title_comercio', 'subtitle_comercio', 'fecha'],
                 'overwrite': True
             }
         }
@@ -75,12 +78,14 @@ class SJMSpider(scrapy.Spider):
         link_comercio = kwargs['url_comercio']
         title_comercio = response.xpath('//h1/text()').get()
         subtitle_comercio = response.xpath('//h2/text()').get()
+        fecha = response.css('.story-contents__time ::text').get()
 
         yield{
 
             'link_comercio' : link_comercio,
             'title_comercio' : title_comercio,
-            'subtitle_comercio' : subtitle_comercio
+            'subtitle_comercio' : subtitle_comercio,
+            'fecha' : fecha
         }
 
         
