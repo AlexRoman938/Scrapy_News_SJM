@@ -1,5 +1,8 @@
+from tkinter import E
+from urllib.request import Request
 import scrapy
-from helium import *
+from selenium import webdriver
+from selenium.webdriver.common.by import By
 
 """
 What do I want? :
@@ -26,6 +29,8 @@ class SJMSpider(scrapy.Spider):
 
     name = "sjm_republica"
 
+    allowed_domains = ['www.larepublica.pe']
+
     start_urls = [
 
           'https://larepublica.pe/tag/san-juan-de-miraflores/'
@@ -38,24 +43,67 @@ class SJMSpider(scrapy.Spider):
             'sjm_news_republica.json': {
                 'format': 'json',
                 'encoding': 'utf8',
-                'fields': ['link_republica', 'title_republica', 'subtitle_republica'],
+                'fields': ['link_republica', 'title_republica', 'subtitle_republica', 'fecha'],
                 'overwrite': True
             }
         }
     }
 
+    def __init__(self):
+        
+        self.driver = webdriver.Chrome(executable_path = 'C:\\Users\\sasuk\\Downloads\\web_driver\\chromedriver.exe')
+
+        
+
 
 
     def parse(self, response):
         
-        start_firefox('https://larepublica.pe/tag/san-juan-de-miraflores/')
+        self.driver.get('https://larepublica.pe/tag/san-juan-de-miraflores/')
+
+        while True:
+
+            try:
+
+                button_down = self.driver.find_element(By.CSS_SELECTOR, 'button#btnLoadMore')
+
+                url = "https://larepublica.pe/tag/san-juan-de-miraflores/"
+
+                yield Request(url, callback = self.parse2)
+
+                button_down.click()
+
+            except:
+
+                break
 
         
+    def parse2(self, response):
 
         href_republica = response.xpath('//li[@class = "PostSectionListLI"]/h2[@class = "PostSectionListH3"]/a[@class = "PostSectionListA"]/@href').getall()
 
- 
-               
+        for href in href_republica:
+
+            yield response.follow(href, callback = self.parse_link2,
+                                                cb_kwargs = {'url_republica': response.urljoin(href)})
+    
+
+
+    def parse_link2(self, response, **kwargs):
+
+        link_republica = kwargs['url_republica']
+        title_republica = response.xpath("//h1/text()").get()
+        subtitle_republica = response.xpath('//h2[@class = "DefaultSubtitle"]/text()').get()
+        fecha = response.xpath("//div[@class = 'comp-autor-dateTime']/time/text()").get()
+
+        yield{
+
+            'link_republica' : link_republica,
+            'title_republica' : title_republica,
+            'subtitle_republica' : subtitle_republica,
+            'fecha' : fecha
+
+        }
 
     """def parse_link(self, response, **kwargs):
         
