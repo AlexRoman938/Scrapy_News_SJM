@@ -5,6 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 import os
+import time
 
 """
 What do I want? :
@@ -29,6 +30,8 @@ Posiblemente hacer el ver más de abajo
 
 gecko = os.path.normpath(os.path.join(os.path.dirname(__file__), 'geckodriver'))
 binary = FirefoxBinary('C:\\Program Files\\Mozilla Firefox\\firefox.exe')
+
+href_republica = []
 
 class SJMSpider(scrapy.Spider):
 
@@ -63,24 +66,40 @@ class SJMSpider(scrapy.Spider):
     def parse(self, response):
         
         self.driver.get('https://larepublica.pe/tag/san-juan-de-miraflores/')
+        time.sleep(2)
 
-        while True:
+        count = 1
+        while count == 1:
 
-            button_down = self.driver.find_element(By.CSS_SELECTOR, 'button#btnLoadMore')
+            
 
             try:
-
-
-                button_down.click()
-                break
                 
- 
+                
+                button_down = self.driver.find_element(By.CSS_SELECTOR, 'button#btnLoadMore')
+                button_down.click()
+                time.sleep(2)
+                button_down.click() 
+                time.sleep(2)
+                button_down.click()
+                time.sleep(2)
+                button_down.click()  
+                time.sleep(2)
+                
+                href_republica.extend([link.get_attribute('href') for link in self.driver.find_elements(By.CSS_SELECTOR, 'a.PostSectionListA')])
+
+                count = count + 1        
 
             except:
 
-                break
+                pass
         
-        href_republica = response.css('.PostSectionListA ::attr(href)').getall()
+        #href_republica = response.css('.PostSectionListA ::attr(href)').getall()
+
+        #href_republica = self.driver.find_elements(By.CSS_SELECTOR, 'a.PostSectionListA').get_attribute('src')
+
+        #href_republica.extend([link.get_attribute('href') for link in self.driver.find_elements(By.CSS_SELECTOR, 'a.PostSectionListA')])
+
 
         yield{
 
