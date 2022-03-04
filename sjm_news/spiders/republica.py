@@ -33,6 +33,8 @@ binary = FirefoxBinary('C:\\Program Files\\Mozilla Firefox\\firefox.exe')
 
 href_republica = []
 
+
+
 class SJMSpider(scrapy.Spider):
 
     name = "sjm_republica"
@@ -51,16 +53,22 @@ class SJMSpider(scrapy.Spider):
             'sjm_news_republica.json': {
                 'format': 'json',
                 'encoding': 'utf8',
-                'fields': ['link_republica',],
+                'fields': ['link_republica', 'title_republica', 'subtitle_republica', 'fecha'],
                 'overwrite': True
             }
         }
     }
 
     def __init__(self):
+
+        #Block all cookies
+        fp = webdriver.FirefoxProfile()
+        fp.set_preference("network.cookie.cookieBehavior", 2)
         
         self.driver = webdriver.Firefox(firefox_binary= binary,
-                         executable_path= 'C:\\Users\\sasuk\gecko\\geckodriver.exe')
+                         executable_path= 'C:\\Users\\sasuk\gecko\\geckodriver.exe',
+                         firefox_profile=fp)
+        
 
         
     def parse(self, response):
@@ -75,7 +83,10 @@ class SJMSpider(scrapy.Spider):
 
             try:
                 
-                
+                """button_cookie = self.driver.find_element(By.CSS_SELECTOR, 'button. css-47sehv')
+                button_cookie.click()
+                time.sleep(2)"""
+            
                 button_down = self.driver.find_element(By.CSS_SELECTOR, 'button#btnLoadMore')
                 button_down.click()
                 time.sleep(2)
@@ -94,40 +105,18 @@ class SJMSpider(scrapy.Spider):
 
                 pass
         
-        #href_republica = response.css('.PostSectionListA ::attr(href)').getall()
+        for link in href_republica:
 
-        #href_republica = self.driver.find_elements(By.CSS_SELECTOR, 'a.PostSectionListA').get_attribute('src')
+            yield response.follow(link, callback = self.parse_link2, cb_kwargs = {'url' : response.urljoin(link)})
 
-        #href_republica.extend([link.get_attribute('href') for link in self.driver.find_elements(By.CSS_SELECTOR, 'a.PostSectionListA')])
-
-
-        yield{
-
-             'link_republica' : href_republica
-
-        }
 
                 
-        
+    def parse_link2(self, response, **kwargs):
 
-        
-    """def parse2(self, response):
-
-        href_republica = response.xpath('//li[@class = "PostSectionListLI"]/h2[@class = "PostSectionListH3"]/a[@class = "PostSectionListA"]/@href').getall()
-
-        for href in href_republica:
-
-            yield response.follow(href, callback = self.parse_link2,
-                                                cb_kwargs = {'url_republica': response.urljoin(href)})"""
-    
-
-
-    """def parse_link2(self, response, **kwargs):
-
-        link_republica = kwargs['url_republica']
-        title_republica = response.xpath("//h1/text()").get()
-        subtitle_republica = response.xpath('//h2[@class = "DefaultSubtitle"]/text()').get()
-        fecha = response.xpath("//div[@class = 'comp-autor-dateTime']/time/text()").get()
+        link_republica = kwargs['url']
+        title_republica = self.driver.find_elements(By.XPATH,"//h1/text()").get()
+        subtitle_republica = self.driver.find_elements(By.XPATH,'//h2[@class = "DefaultSubtitle"]/text()').get()
+        fecha = self.driver.find_elements(By.XPATH,"//div[@class = 'comp-autor-dateTime']/time/text()").get()
 
         yield{
 
@@ -136,6 +125,6 @@ class SJMSpider(scrapy.Spider):
             'subtitle_republica' : subtitle_republica,
             'fecha' : fecha
 
-        }"""
+        }
 
     

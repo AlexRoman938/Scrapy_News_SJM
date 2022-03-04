@@ -1,4 +1,3 @@
-from gc import callbacks
 import scrapy
 
 """
@@ -6,23 +5,17 @@ What do I want? :
 
 DIARIO EL COMERCIO
 
-fecha de la noticia -> Con una condición de que solo extraer las que son del 2022
-títulos de cada artículo
 
-Titulo del artículo : response.xpath('//h1/text()').get()
+Title article : response.xpath('//h1/text()').get()
 
-Luego entrar al artículo
+Href article : response.css('.story-item__title ::attr(href)').getall()
 
-Href articulo : response.css('.story-item__title ::attr(href)').getall()
+Subtitle article: response.xpath('//h2/text()').get()
 
-Sacar el subtítulo: response.xpath('//h2/text()').get()
+date : response.css('.story-contents__time ::text').get()
 
-fecha : response.css('.story-contents__time ::text').get()
+Loop in all pages : response.css('.pagination__right ::attr(href)').get()
 
-Recorrer las páginas : response.css('.pagination__right ::attr(href)').get()
-
-
-Los artículos que dicen null es porque su estructura es muy diferente a lo de las otras noticias.
 
 """
 
@@ -43,7 +36,7 @@ class SJMSpider(scrapy.Spider):
             'sjm_news_comercio.json': {
                 'format': 'json',
                 'encoding': 'utf8',
-                'fields': ['link_comercio', 'title_comercio', 'subtitle_comercio', 'fecha'],
+                'fields': ['link_comercio', 'title_comercio', 'subtitle_comercio', 'date'],
                 'overwrite': True
             }
         }
@@ -78,14 +71,14 @@ class SJMSpider(scrapy.Spider):
         link_comercio = kwargs['url_comercio']
         title_comercio = response.xpath('//h1/text()').get()
         subtitle_comercio = response.xpath('//h2/text()').get()
-        fecha = response.css('.story-contents__time ::text').get()
+        date = response.css('.story-contents__time ::text').get()
 
         yield{
 
             'link_comercio' : link_comercio,
             'title_comercio' : title_comercio,
             'subtitle_comercio' : subtitle_comercio,
-            'fecha' : fecha
+            'date' : date
         }
 
         
