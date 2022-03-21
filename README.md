@@ -1,6 +1,9 @@
 # Scrapy_News_SJM
-## A WEB SCRAPING IN "DIARIO EL COMERCIO" ABOUT CURRENT SAN JUAN DE MIRAFLORES NEWS
 
-INSTALLATION:
+##DESCRIPTION
 
-  pip install scrapy
+This project makes a web scraping in [DIARIO EL COMERCIO WEBSITE] (https://elcomercio.pe/noticias/san-juan-de-miraflores/) about current San Juan de Miraflores news.
+
+
+
+
