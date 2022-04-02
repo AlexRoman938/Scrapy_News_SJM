@@ -44,7 +44,7 @@ The result of the project is [here](https://github.com/AlexRoman938/Scrapy_News_
 
 ![image](https://user-images.githubusercontent.com/85772184/160527485-ed281149-181d-4e2c-9490-ba4181437d5c.png)
 
-<strong>Observation: There are some news don't have title, subtitle and date. It was cuz some href links have different structures (You will observse that problem when you open those links). </strong>
+<strong>Observation: There are some news don't have title, subtitle and date. It was cuz some href links have different structures (You will observe that problem when you open those links). </strong>
 
 ## FUTURE WORK
 
