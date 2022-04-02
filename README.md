@@ -44,6 +44,12 @@ The result of the project is [here](https://github.com/AlexRoman938/Scrapy_News_
 
 ![image](https://user-images.githubusercontent.com/85772184/160527485-ed281149-181d-4e2c-9490-ba4181437d5c.png)
 
+## FUTURE WORK
+
+Finally, I would like to do an analysis with the news in the future (i.e. Exploratory Data Analysis). 
+
+
+
 
 
 
