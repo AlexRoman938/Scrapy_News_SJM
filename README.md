@@ -46,7 +46,7 @@ The result of the project is [here](https://github.com/AlexRoman938/Scrapy_News_
 
 ## FUTURE WORK
 
-Finally, I would like to do an analysis with the news in the future (i.e. Exploratory Data Analysis). 
+Finally, I would like to do an analysis with the news in the future. So, I would use NLP (Natural Language Process) to know which are most words in the news and what is the situation of San Juan de Miraflores.
 
 
 
